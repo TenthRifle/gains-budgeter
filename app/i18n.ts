@@ -59,6 +59,18 @@ export type Translations = {
   affordLeftAfter: string;
   affordOverBy: string;
   affordTightNote: string;
+  trackerTitle: string;
+  trackerIncomeLabel: string;
+  trackerIncomePlaceholder: string;
+  trackerSpentLabel: string;
+  trackerBudgeted: string;
+  trackerPlaceholder: string;
+  trackerOver: string;
+  trackerUnder: string;
+  trackerOnBudget: string;
+  trackerSummaryOver: string;
+  trackerSummaryUnder: string;
+  trackerSummaryExact: string;
 };
 
 export const TRANSLATIONS: Record<Lang, Translations> = {
@@ -115,6 +127,18 @@ export const TRANSLATIONS: Record<Lang, Translations> = {
     affordLeftAfter: "You'll have",
     affordOverBy: "This is",
     affordTightNote: "Consider cutting other spending in this category.",
+    trackerTitle: "Month-end tracker",
+    trackerIncomeLabel: "Your income this month (R)",
+    trackerIncomePlaceholder: "e.g. 7 500",
+    trackerSpentLabel: "What did you actually spend?",
+    trackerBudgeted: "Budget",
+    trackerPlaceholder: "e.g. 1 200",
+    trackerOver: "Overspent",
+    trackerUnder: "Saved",
+    trackerOnBudget: "On budget",
+    trackerSummaryOver: "You overspent by",
+    trackerSummaryUnder: "You came in under budget by",
+    trackerSummaryExact: "You hit your budget exactly. Well done.",
   },
   zu: {
     brandTagline: "Yakha uhlelo lwenyanga olufanele impilo yangempela.",
@@ -169,6 +193,18 @@ export const TRANSLATIONS: Record<Lang, Translations> = {
     affordLeftAfter: "Uzosala no-",
     affordOverBy: "Lokhu kudlula nge-",
     affordTightNote: "Cabanga ukunciphisa ezinye izindleko kule ngxenye.",
+    trackerTitle: "Ukulandelela ekupheleni kwenyanga",
+    trackerIncomeLabel: "Umholo wakho wale nyanga (R)",
+    trackerIncomePlaceholder: "isib. 7 500",
+    trackerSpentLabel: "Wachitha malini ngempela?",
+    trackerBudgeted: "Isabelomali",
+    trackerPlaceholder: "isib. 1 200",
+    trackerOver: "Wachitha ngokweqile",
+    trackerUnder: "Wasindisa",
+    trackerOnBudget: "Usesibelomanini",
+    trackerSummaryOver: "Wachitha ngokweqile nge-",
+    trackerSummaryUnder: "Wangaphansi kwesabelomali nge-",
+    trackerSummaryExact: "Wafinyelela isabelomali sakho ngqo. Akekho!",
   },
   af: {
     brandTagline: "'n Maandelikse plan wat pas by die werklike lewe.",
@@ -223,5 +259,17 @@ export const TRANSLATIONS: Record<Lang, Translations> = {
     affordLeftAfter: "Jy sal",
     affordOverBy: "Dit is",
     affordTightNote: "Oorweeg om ander besteding in hierdie kategorie te sny.",
+    trackerTitle: "Maandeinde-opsporing",
+    trackerIncomeLabel: "Jou inkomste hierdie maand (R)",
+    trackerIncomePlaceholder: "bv. 7 500",
+    trackerSpentLabel: "Wat het jy werklik bestee?",
+    trackerBudgeted: "Begroting",
+    trackerPlaceholder: "bv. 1 200",
+    trackerOver: "Oorbestee",
+    trackerUnder: "Gespaar",
+    trackerOnBudget: "Op begroting",
+    trackerSummaryOver: "Jy het die begroting met",
+    trackerSummaryUnder: "Jy het die begroting met",
+    trackerSummaryExact: "Jy het jou begroting presies getref. Goed gedaan.",
   },
 };
