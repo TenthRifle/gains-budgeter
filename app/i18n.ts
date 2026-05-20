@@ -45,6 +45,20 @@ export type Translations = {
   errorTitle: string;
   errorIntro: string;
   tryAgainButton: string;
+  affordTitle: string;
+  affordIncomeLabel: string;
+  affordIncomePlaceholder: string;
+  affordPurchaseLabel: string;
+  affordPurchasePlaceholder: string;
+  affordCategoryLabel: string;
+  affordYes: string;
+  affordTight: string;
+  affordNo: string;
+  affordBudgetIs: string;
+  affordPerMonth: string;
+  affordLeftAfter: string;
+  affordOverBy: string;
+  affordTightNote: string;
 };
 
 export const TRANSLATIONS: Record<Lang, Translations> = {
@@ -87,6 +101,20 @@ export const TRANSLATIONS: Record<Lang, Translations> = {
     errorTitle: "We could not create the budget yet.",
     errorIntro: "Your choices are saved. Fix the issue below and try again.",
     tryAgainButton: "Try again",
+    affordTitle: "Can I afford this?",
+    affordIncomeLabel: "Your take-home this month (R)",
+    affordIncomePlaceholder: "e.g. 7 500",
+    affordPurchaseLabel: "How much does it cost? (R)",
+    affordPurchasePlaceholder: "e.g. 850",
+    affordCategoryLabel: "Which budget does this come from?",
+    affordYes: "Yes — you can afford this.",
+    affordTight: "Tight — this nearly maxes your budget.",
+    affordNo: "No — this is over budget.",
+    affordBudgetIs: "Your",
+    affordPerMonth: "budget is",
+    affordLeftAfter: "You'll have",
+    affordOverBy: "This is",
+    affordTightNote: "Consider cutting other spending in this category.",
   },
   zu: {
     brandTagline: "Yakha uhlelo lwenyanga olufanele impilo yangempela.",
@@ -127,6 +155,20 @@ export const TRANSLATIONS: Record<Lang, Translations> = {
     errorTitle: "Asikwazanga ukwakha isabelomali.",
     errorIntro: "Izinqumo zakho zikhona. Lungisa inkinga engezansi bese uzama futhi.",
     tryAgainButton: "Zama futhi",
+    affordTitle: "Ngingakwekhetha lokhu?",
+    affordIncomeLabel: "Umholo wakho wale nyanga (R)",
+    affordIncomePlaceholder: "isib. 7 500",
+    affordPurchaseLabel: "Kubiza malini? (R)",
+    affordPurchasePlaceholder: "isib. 850",
+    affordCategoryLabel: "Ivela kuluphi uhlobo lwesabelomali?",
+    affordYes: "Yebo — ungazikhulula lokhu.",
+    affordTight: "Kuncane — lokhu kumthombo wakho ucishe ugcwale.",
+    affordNo: "Cha — lokhu ngaphezulu kwesabelomali.",
+    affordBudgetIs: "Isabelomali sakho",
+    affordPerMonth: "sinyanga zonke",
+    affordLeftAfter: "Uzosala no-",
+    affordOverBy: "Lokhu kudlula nge-",
+    affordTightNote: "Cabanga ukunciphisa ezinye izindleko kule ngxenye.",
   },
   af: {
     brandTagline: "'n Maandelikse plan wat pas by die werklike lewe.",
@@ -167,5 +209,19 @@ export const TRANSLATIONS: Record<Lang, Translations> = {
     errorTitle: "Ons kon nie die begroting skep nie.",
     errorIntro: "Jou keuses is gestoor. Stel die probleem hieronder reg en probeer weer.",
     tryAgainButton: "Probeer weer",
+    affordTitle: "Kan ek dit bekostig?",
+    affordIncomeLabel: "Jou netto inkomste hierdie maand (R)",
+    affordIncomePlaceholder: "bv. 7 500",
+    affordPurchaseLabel: "Hoeveel kos dit? (R)",
+    affordPurchasePlaceholder: "bv. 850",
+    affordCategoryLabel: "Uit watter begrotingskategorie kom dit?",
+    affordYes: "Ja — jy kan dit bekostig.",
+    affordTight: "Krap — dit gebruik byna jou hele begroting.",
+    affordNo: "Nee — dit is bo begroting.",
+    affordBudgetIs: "Jou",
+    affordPerMonth: "begroting is",
+    affordLeftAfter: "Jy sal",
+    affordOverBy: "Dit is",
+    affordTightNote: "Oorweeg om ander besteding in hierdie kategorie te sny.",
   },
 };

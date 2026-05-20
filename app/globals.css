@@ -373,6 +373,135 @@ button {
   line-height: 1.5;
 }
 
+.afford-section {
+  border-top: 1px solid var(--line);
+  padding-top: 22px;
+  margin-top: 8px;
+}
+
+.afford-inputs {
+  display: grid;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.afford-input-group {
+  display: grid;
+  gap: 6px;
+}
+
+.afford-input-group label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.afford-input {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--white);
+  font-size: 16px;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.afford-input:focus {
+  border-color: var(--green);
+}
+
+.afford-input::placeholder {
+  color: rgba(184, 199, 216, 0.45);
+}
+
+.afford-input::-webkit-inner-spin-button,
+.afford-input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+}
+
+.afford-cat-label {
+  margin: 0 0 10px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.afford-cat-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.afford-cat-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 12px 8px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--muted);
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 13px;
+  transition: border-color 0.15s, color 0.15s, background 0.15s;
+}
+
+.afford-cat-btn:hover {
+  border-color: rgba(255, 255, 255, 0.35);
+  color: var(--white);
+}
+
+.afford-cat-btn--active {
+  background: rgba(155, 230, 124, 0.08);
+}
+
+.afford-cat-pct {
+  font-size: 11px;
+  font-weight: 500;
+  opacity: 0.7;
+}
+
+.afford-result {
+  padding: 14px 16px;
+  border-radius: 8px;
+  border: 1px solid;
+  display: grid;
+  gap: 5px;
+  line-height: 1.45;
+}
+
+.afford-result strong {
+  display: block;
+  font-size: 15px;
+}
+
+.afford-result span {
+  font-size: 14px;
+}
+
+.afford-result--yes {
+  border-color: rgba(155, 230, 124, 0.4);
+  background: rgba(155, 230, 124, 0.07);
+  color: var(--green-2);
+}
+
+.afford-result--warn {
+  border-color: rgba(255, 200, 100, 0.4);
+  background: rgba(255, 200, 100, 0.07);
+  color: #ffd580;
+}
+
+.afford-result--no {
+  border-color: rgba(255, 180, 168, 0.4);
+  background: rgba(255, 180, 168, 0.07);
+  color: var(--danger);
+}
+
 .error-box {
   margin-top: 18px;
   padding: 14px;

@@ -11,6 +11,7 @@ type IncomeRange = (typeof INCOME_RANGES)[number];
 type LivingCondition = (typeof LIVING_CONDITIONS)[number];
 type Dependants = (typeof DEPENDANTS)[number];
 type Step = 1 | 2 | 3 | 4;
+type AffordCategory = "food_pct" | "housing_pct" | "transport_pct";
 
 type BudgetResult = {
   food_pct: number;
@@ -345,6 +346,7 @@ function OutputScreen({
       <p className="output-intro">{outputIntro}</p>
       <BudgetBreakdown budget={budget} income={income} budgetRows={budgetRows} />
       <AdviceCards advice={budget.advice} eyebrow={t.adviceEyebrow} />
+      <AffordabilityChecker t={t} budget={budget} budgetRows={budgetRows} />
       <div className="back-row">
         <button className="primary-button" type="button" onClick={onStartOver}>
           {t.startOverButton}
@@ -404,6 +406,116 @@ function AdviceCards({ advice, eyebrow }: { advice: string[]; eyebrow: string })
           </div>
         ))}
       </div>
+    </section>
+  );
+}
+
+function AffordabilityChecker({
+  t,
+  budget,
+  budgetRows,
+}: {
+  t: typeof TRANSLATIONS.en;
+  budget: BudgetResult;
+  budgetRows: { key: keyof BudgetResult; label: string; color: string }[];
+}) {
+  const [actualIncome, setActualIncome] = useState("");
+  const [purchaseAmount, setPurchaseAmount] = useState("");
+  const [category, setCategory] = useState<AffordCategory | null>(null);
+
+  const income = parseFloat(actualIncome.replace(/\s/g, ""));
+  const purchase = parseFloat(purchaseAmount.replace(/\s/g, ""));
+  const ready = income > 0 && purchase > 0 && category !== null;
+
+  const result = useMemo(() => {
+    if (!ready || !category) return null;
+    const ceiling = (income * (budget[category] as number)) / 100;
+    const ratio = purchase / ceiling;
+    const difference = Math.abs(ceiling - purchase);
+    const verdict: "yes" | "tight" | "no" =
+      ratio <= 0.75 ? "yes" : ratio <= 1.0 ? "tight" : "no";
+    return { verdict, ceiling, difference, ratio };
+  }, [ready, income, purchase, category, budget]);
+
+  const activeRow = category ? budgetRows.find((r) => r.key === category) : null;
+
+  function renderResult() {
+    if (!result || !activeRow) return null;
+    const { verdict, ceiling, difference } = result;
+    const label = activeRow.label.toLowerCase();
+    const perMonth = `${formatRand(ceiling)}/month`;
+
+    let cls = "afford-result ";
+    let title = "";
+    let detail = "";
+
+    if (verdict === "yes") {
+      cls += "afford-result--yes";
+      title = t.affordYes;
+      detail = `${t.affordBudgetIs} ${label} ${t.affordPerMonth} ${perMonth}. ${t.affordLeftAfter} ${formatRand(difference)} left.`;
+    } else if (verdict === "tight") {
+      cls += "afford-result--warn";
+      title = t.affordTight;
+      detail = `${t.affordBudgetIs} ${label} ${t.affordPerMonth} ${perMonth}. ${t.affordTightNote}`;
+    } else {
+      cls += "afford-result--no";
+      title = t.affordNo;
+      detail = `${t.affordBudgetIs} ${label} ${t.affordPerMonth} ${perMonth}. ${t.affordOverBy} ${formatRand(difference)} over.`;
+    }
+
+    return (
+      <div className={cls}>
+        <strong>{title}</strong>
+        <span>{detail}</span>
+      </div>
+    );
+  }
+
+  return (
+    <section className="afford-section" aria-label={t.affordTitle}>
+      <p className="eyebrow">{t.affordTitle}</p>
+      <div className="afford-inputs">
+        <div className="afford-input-group">
+          <label htmlFor="actual-income">{t.affordIncomeLabel}</label>
+          <input
+            id="actual-income"
+            className="afford-input"
+            type="number"
+            min="0"
+            placeholder={t.affordIncomePlaceholder}
+            value={actualIncome}
+            onChange={(e) => setActualIncome(e.target.value)}
+          />
+        </div>
+        <div className="afford-input-group">
+          <label htmlFor="purchase-amount">{t.affordPurchaseLabel}</label>
+          <input
+            id="purchase-amount"
+            className="afford-input"
+            type="number"
+            min="0"
+            placeholder={t.affordPurchasePlaceholder}
+            value={purchaseAmount}
+            onChange={(e) => setPurchaseAmount(e.target.value)}
+          />
+        </div>
+      </div>
+      <p className="afford-cat-label">{t.affordCategoryLabel}</p>
+      <div className="afford-cat-grid">
+        {budgetRows.map((row) => (
+          <button
+            key={row.key}
+            type="button"
+            className={`afford-cat-btn${category === row.key ? " afford-cat-btn--active" : ""}`}
+            style={category === row.key ? { borderColor: row.color, color: row.color } : {}}
+            onClick={() => setCategory(row.key as AffordCategory)}
+          >
+            {row.label}
+            <span className="afford-cat-pct">{budget[row.key as AffordCategory]}%</span>
+          </button>
+        ))}
+      </div>
+      {renderResult()}
     </section>
   );
 }
