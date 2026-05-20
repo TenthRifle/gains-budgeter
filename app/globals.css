@@ -93,10 +93,11 @@ button {
 .brand-mark {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
-  font-size: 22px;
-  font-weight: 800;
-  letter-spacing: 0;
+}
+
+.brand-logo {
+  height: 40px;
+  width: auto;
 }
 
 .brand-icon {
@@ -265,6 +266,29 @@ button {
 .condition-card span {
   color: var(--muted);
   line-height: 1.45;
+}
+
+.custom-toggle-btn {
+  display: block;
+  margin-top: 14px;
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.15s;
+}
+
+.custom-toggle-btn:hover {
+  color: var(--green);
+}
+
+.custom-income-wrap {
+  margin-top: 16px;
+  display: grid;
+  gap: 4px;
 }
 
 .back-row {

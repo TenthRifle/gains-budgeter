@@ -45,6 +45,10 @@ export type Translations = {
   errorTitle: string;
   errorIntro: string;
   tryAgainButton: string;
+  customIncomeToggle: string;
+  customIncomeLabel: string;
+  customIncomePlaceholder: string;
+  customIncomeContinue: string;
   affordTitle: string;
   affordIncomeLabel: string;
   affordIncomePlaceholder: string;
@@ -113,6 +117,10 @@ export const TRANSLATIONS: Record<Lang, Translations> = {
     errorTitle: "We could not create the budget yet.",
     errorIntro: "Your choices are saved. Fix the issue below and try again.",
     tryAgainButton: "Try again",
+    customIncomeToggle: "Enter exact amount",
+    customIncomeLabel: "Your monthly income (R)",
+    customIncomePlaceholder: "e.g. 8 500",
+    customIncomeContinue: "Continue",
     affordTitle: "Can I afford this?",
     affordIncomeLabel: "Your take-home this month (R)",
     affordIncomePlaceholder: "e.g. 7 500",
@@ -179,6 +187,10 @@ export const TRANSLATIONS: Record<Lang, Translations> = {
     errorTitle: "Asikwazanga ukwakha isabelomali.",
     errorIntro: "Izinqumo zakho zikhona. Lungisa inkinga engezansi bese uzama futhi.",
     tryAgainButton: "Zama futhi",
+    customIncomeToggle: "Faka imali ngqo",
+    customIncomeLabel: "Umholo wakho wanyanga zonke (R)",
+    customIncomePlaceholder: "isib. 8 500",
+    customIncomeContinue: "Qhubeka",
     affordTitle: "Ngingakwekhetha lokhu?",
     affordIncomeLabel: "Umholo wakho wale nyanga (R)",
     affordIncomePlaceholder: "isib. 7 500",
@@ -245,6 +257,10 @@ export const TRANSLATIONS: Record<Lang, Translations> = {
     errorTitle: "Ons kon nie die begroting skep nie.",
     errorIntro: "Jou keuses is gestoor. Stel die probleem hieronder reg en probeer weer.",
     tryAgainButton: "Probeer weer",
+    customIncomeToggle: "Voer presiese bedrag in",
+    customIncomeLabel: "Jou maandelikse inkomste (R)",
+    customIncomePlaceholder: "bv. 8 500",
+    customIncomeContinue: "Gaan voort",
     affordTitle: "Kan ek dit bekostig?",
     affordIncomeLabel: "Jou netto inkomste hierdie maand (R)",
     affordIncomePlaceholder: "bv. 7 500",

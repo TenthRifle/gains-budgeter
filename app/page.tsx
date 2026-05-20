@@ -30,9 +30,16 @@ function formatRand(amount: number) {
   return `R${Math.round(amount).toLocaleString("en-ZA")}`;
 }
 
+function customToRange(amount: number): IncomeRange {
+  if (amount <= 10000) return "R4k-R10k";
+  if (amount <= 15000) return "R10k-R15k";
+  return "R15k-R30k";
+}
+
 export default function Home() {
   const [step, setStep] = useState<Step>(1);
   const [income, setIncome] = useState<IncomeRange | null>(null);
+  const [exactIncome, setExactIncome] = useState<number | null>(null);
   const [dependants, setDependants] = useState<Dependants | null>(null);
   const [livingCondition, setLivingCondition] = useState<LivingCondition | null>(null);
   const [budget, setBudget] = useState<BudgetResult | null>(null);
@@ -92,6 +99,7 @@ export default function Home() {
   function startOver() {
     setStep(1);
     setIncome(null);
+    setExactIncome(null);
     setDependants(null);
     setLivingCondition(null);
     setBudget(null);
@@ -113,8 +121,7 @@ export default function Home() {
           <div>
             <div className="brand-panel-top">
               <div className="brand-mark">
-                <span className="brand-icon">R</span>
-                <span>gAIns</span>
+                <img src="/logo.png" alt="gAIns" className="brand-logo" />
               </div>
               <div className="lang-toggle" role="group" aria-label="Language">
                 {LANGUAGES.map(({ code, label }) => (
@@ -138,7 +145,7 @@ export default function Home() {
           <div className="selected-summary" aria-label="Selected answers">
             <div className="summary-item">
               <span>{t.summaryIncome}</span>
-              <strong>{income || t.notChosen}</strong>
+              <strong>{exactIncome ? formatRand(exactIncome) : (income || t.notChosen)}</strong>
             </div>
             <div className="summary-item">
               <span>{t.summaryDependants}</span>
@@ -156,7 +163,7 @@ export default function Home() {
           {step === 1 && (
             <StepOne
               t={t}
-              onSelect={(range) => { setIncome(range); setStep(2); }}
+              onSelect={(range, exact) => { setIncome(range); setExactIncome(exact ?? null); setStep(2); }}
             />
           )}
           {step === 2 && (
@@ -182,6 +189,7 @@ export default function Home() {
                   t={t}
                   budget={budget}
                   income={income}
+                  exactIncome={exactIncome}
                   outputIntro={buildOutputIntro(dependants, livingCondition)}
                   budgetRows={budgetRows}
                   onStartOver={startOver}
@@ -230,8 +238,18 @@ function StepOne({
   onSelect,
 }: {
   t: typeof TRANSLATIONS.en;
-  onSelect: (income: IncomeRange) => void;
+  onSelect: (income: IncomeRange, exact?: number) => void;
 }) {
+  const [showCustom, setShowCustom] = useState(false);
+  const [customVal, setCustomVal] = useState("");
+
+  const parsed = parseFloat(customVal.replace(/[\s,]/g, ""));
+  const isValid = !isNaN(parsed) && parsed > 0;
+
+  function submitCustom() {
+    if (isValid) onSelect(customToRange(parsed), parsed);
+  }
+
   return (
     <div className="step">
       <p className="eyebrow">{t.step1Label}</p>
@@ -239,11 +257,51 @@ function StepOne({
       <p className="step-intro">{t.step1Intro}</p>
       <div className="button-grid">
         {INCOME_RANGES.map((range) => (
-          <button className="select-button" key={range} type="button" onClick={() => onSelect(range)}>
+          <button
+            className="select-button"
+            key={range}
+            type="button"
+            onClick={() => { setShowCustom(false); onSelect(range); }}
+          >
             {range}
           </button>
         ))}
       </div>
+      {!showCustom ? (
+        <button className="custom-toggle-btn" type="button" onClick={() => setShowCustom(true)}>
+          {t.customIncomeToggle} →
+        </button>
+      ) : (
+        <div className="custom-income-wrap">
+          <div className="afford-input-group">
+            <label htmlFor="custom-income">{t.customIncomeLabel}</label>
+            <input
+              id="custom-income"
+              className="afford-input"
+              type="number"
+              min="0"
+              placeholder={t.customIncomePlaceholder}
+              value={customVal}
+              autoFocus
+              onChange={(e) => setCustomVal(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && submitCustom()}
+            />
+          </div>
+          <div className="back-row">
+            <button className="secondary-button" type="button" onClick={() => setShowCustom(false)}>
+              {t.backButton}
+            </button>
+            <button
+              className="primary-button"
+              type="button"
+              disabled={!isValid}
+              onClick={submitCustom}
+            >
+              {t.customIncomeContinue}
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -328,6 +386,7 @@ function OutputScreen({
   t,
   budget,
   income,
+  exactIncome,
   outputIntro,
   budgetRows,
   onStartOver,
@@ -335,18 +394,19 @@ function OutputScreen({
   t: typeof TRANSLATIONS.en;
   budget: BudgetResult;
   income: IncomeRange | null;
+  exactIncome: number | null;
   outputIntro: string;
   budgetRows: { key: keyof BudgetResult; label: string; color: string }[];
   onStartOver: () => void;
 }) {
+  const incomeDisplay = exactIncome ? formatRand(exactIncome) : income;
   return (
     <div className="output">
       <p className="eyebrow">{t.outputEyebrow}</p>
-      <h2>{income} {t.monthlyPlan}</h2>
+      <h2>{incomeDisplay} {t.monthlyPlan}</h2>
       <p className="output-intro">{outputIntro}</p>
-      <BudgetBreakdown budget={budget} income={income} budgetRows={budgetRows} />
+      <BudgetBreakdown budget={budget} income={income} exactIncome={exactIncome} budgetRows={budgetRows} />
       <AdviceCards advice={budget.advice} eyebrow={t.adviceEyebrow} />
-      <AffordabilityChecker t={t} budget={budget} budgetRows={budgetRows} />
       <MonthEndTracker t={t} budget={budget} budgetRows={budgetRows} />
       <div className="back-row">
         <button className="primary-button" type="button" onClick={onStartOver}>
@@ -360,13 +420,17 @@ function OutputScreen({
 function BudgetBreakdown({
   budget,
   income,
+  exactIncome,
   budgetRows,
 }: {
   budget: BudgetResult;
   income: IncomeRange | null;
+  exactIncome: number | null;
   budgetRows: { key: keyof BudgetResult; label: string; color: string }[];
 }) {
-  const bounds = income ? INCOME_BOUNDS[income] : null;
+  const bounds: [number, number] | null = exactIncome
+    ? [exactIncome, exactIncome]
+    : income ? INCOME_BOUNDS[income] : null;
 
   return (
     <section aria-label="Budget breakdown">
@@ -374,7 +438,9 @@ function BudgetBreakdown({
         {budgetRows.map((row) => {
           const pct = budget[row.key] as number;
           const randRange = bounds
-            ? `${formatRand((bounds[0] * pct) / 100)} – ${formatRand((bounds[1] * pct) / 100)}`
+            ? bounds[0] === bounds[1]
+              ? formatRand((bounds[0] * pct) / 100)
+              : `${formatRand((bounds[0] * pct) / 100)} – ${formatRand((bounds[1] * pct) / 100)}`
             : null;
           return (
             <div className="budget-row" key={row.key}>
@@ -411,115 +477,6 @@ function AdviceCards({ advice, eyebrow }: { advice: string[]; eyebrow: string })
   );
 }
 
-function AffordabilityChecker({
-  t,
-  budget,
-  budgetRows,
-}: {
-  t: typeof TRANSLATIONS.en;
-  budget: BudgetResult;
-  budgetRows: { key: keyof BudgetResult; label: string; color: string }[];
-}) {
-  const [actualIncome, setActualIncome] = useState("");
-  const [purchaseAmount, setPurchaseAmount] = useState("");
-  const [category, setCategory] = useState<AffordCategory | null>(null);
-
-  const income = parseFloat(actualIncome.replace(/\s/g, ""));
-  const purchase = parseFloat(purchaseAmount.replace(/\s/g, ""));
-  const ready = income > 0 && purchase > 0 && category !== null;
-
-  const result = useMemo(() => {
-    if (!ready || !category) return null;
-    const ceiling = (income * (budget[category] as number)) / 100;
-    const ratio = purchase / ceiling;
-    const difference = Math.abs(ceiling - purchase);
-    const verdict: "yes" | "tight" | "no" =
-      ratio <= 0.75 ? "yes" : ratio <= 1.0 ? "tight" : "no";
-    return { verdict, ceiling, difference, ratio };
-  }, [ready, income, purchase, category, budget]);
-
-  const activeRow = category ? budgetRows.find((r) => r.key === category) : null;
-
-  function renderResult() {
-    if (!result || !activeRow) return null;
-    const { verdict, ceiling, difference } = result;
-    const label = activeRow.label.toLowerCase();
-    const perMonth = `${formatRand(ceiling)}/month`;
-
-    let cls = "afford-result ";
-    let title = "";
-    let detail = "";
-
-    if (verdict === "yes") {
-      cls += "afford-result--yes";
-      title = t.affordYes;
-      detail = `${t.affordBudgetIs} ${label} ${t.affordPerMonth} ${perMonth}. ${t.affordLeftAfter} ${formatRand(difference)} left.`;
-    } else if (verdict === "tight") {
-      cls += "afford-result--warn";
-      title = t.affordTight;
-      detail = `${t.affordBudgetIs} ${label} ${t.affordPerMonth} ${perMonth}. ${t.affordTightNote}`;
-    } else {
-      cls += "afford-result--no";
-      title = t.affordNo;
-      detail = `${t.affordBudgetIs} ${label} ${t.affordPerMonth} ${perMonth}. ${t.affordOverBy} ${formatRand(difference)} over.`;
-    }
-
-    return (
-      <div className={cls}>
-        <strong>{title}</strong>
-        <span>{detail}</span>
-      </div>
-    );
-  }
-
-  return (
-    <section className="afford-section" aria-label={t.affordTitle}>
-      <p className="eyebrow">{t.affordTitle}</p>
-      <div className="afford-inputs">
-        <div className="afford-input-group">
-          <label htmlFor="actual-income">{t.affordIncomeLabel}</label>
-          <input
-            id="actual-income"
-            className="afford-input"
-            type="number"
-            min="0"
-            placeholder={t.affordIncomePlaceholder}
-            value={actualIncome}
-            onChange={(e) => setActualIncome(e.target.value)}
-          />
-        </div>
-        <div className="afford-input-group">
-          <label htmlFor="purchase-amount">{t.affordPurchaseLabel}</label>
-          <input
-            id="purchase-amount"
-            className="afford-input"
-            type="number"
-            min="0"
-            placeholder={t.affordPurchasePlaceholder}
-            value={purchaseAmount}
-            onChange={(e) => setPurchaseAmount(e.target.value)}
-          />
-        </div>
-      </div>
-      <p className="afford-cat-label">{t.affordCategoryLabel}</p>
-      <div className="afford-cat-grid">
-        {budgetRows.map((row) => (
-          <button
-            key={row.key}
-            type="button"
-            className={`afford-cat-btn${category === row.key ? " afford-cat-btn--active" : ""}`}
-            style={category === row.key ? { borderColor: row.color, color: row.color } : {}}
-            onClick={() => setCategory(row.key as AffordCategory)}
-          >
-            {row.label}
-            <span className="afford-cat-pct">{budget[row.key as AffordCategory]}%</span>
-          </button>
-        ))}
-      </div>
-      {renderResult()}
-    </section>
-  );
-}
 
 function MonthEndTracker({
   t,
