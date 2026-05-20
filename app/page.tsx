@@ -11,8 +11,6 @@ type IncomeRange = (typeof INCOME_RANGES)[number];
 type LivingCondition = (typeof LIVING_CONDITIONS)[number];
 type Dependants = (typeof DEPENDANTS)[number];
 type Step = 1 | 2 | 3 | 4;
-type AffordCategory = "food_pct" | "housing_pct" | "transport_pct";
-
 type BudgetResult = {
   food_pct: number;
   housing_pct: number;
@@ -407,7 +405,6 @@ function OutputScreen({
       <p className="output-intro">{outputIntro}</p>
       <BudgetBreakdown budget={budget} income={income} exactIncome={exactIncome} budgetRows={budgetRows} />
       <AdviceCards advice={budget.advice} eyebrow={t.adviceEyebrow} />
-      <MonthEndTracker t={t} budget={budget} budgetRows={budgetRows} />
       <div className="back-row">
         <button className="primary-button" type="button" onClick={onStartOver}>
           {t.startOverButton}
@@ -473,126 +470,6 @@ function AdviceCards({ advice, eyebrow }: { advice: string[]; eyebrow: string })
           </div>
         ))}
       </div>
-    </section>
-  );
-}
-
-
-function MonthEndTracker({
-  t,
-  budget,
-  budgetRows,
-}: {
-  t: typeof TRANSLATIONS.en;
-  budget: BudgetResult;
-  budgetRows: { key: keyof BudgetResult; label: string; color: string }[];
-}) {
-  const [income, setIncome] = useState("");
-  const [spent, setSpent] = useState<Record<string, string>>({});
-
-  const parsedIncome = parseFloat(income.replace(/\s/g, ""));
-  const hasIncome = parsedIncome > 0;
-
-  const rows = budgetRows.map((row) => {
-    const budgeted = hasIncome ? (parsedIncome * (budget[row.key] as number)) / 100 : null;
-    const raw = spent[row.key] ?? "";
-    const actual = raw === "" ? null : parseFloat(raw.replace(/\s/g, ""));
-    const diff = budgeted !== null && actual !== null && !isNaN(actual) ? actual - budgeted : null;
-    return { ...row, budgeted, actual, diff };
-  });
-
-  const filledRows = rows.filter((r) => r.diff !== null);
-  const totalDiff = filledRows.length > 0
-    ? filledRows.reduce((sum, r) => sum + (r.diff ?? 0), 0)
-    : null;
-
-  return (
-    <section className="afford-section" aria-label={t.trackerTitle}>
-      <p className="eyebrow">{t.trackerTitle}</p>
-      <div className="afford-inputs">
-        <div className="afford-input-group">
-          <label htmlFor="tracker-income">{t.trackerIncomeLabel}</label>
-          <input
-            id="tracker-income"
-            className="afford-input"
-            type="number"
-            min="0"
-            placeholder={t.trackerIncomePlaceholder}
-            value={income}
-            onChange={(e) => setIncome(e.target.value)}
-          />
-        </div>
-      </div>
-
-      {hasIncome && (
-        <>
-          <p className="afford-cat-label">{t.trackerSpentLabel}</p>
-          <div className="tracker-grid">
-            {rows.map((row) => (
-              <div key={row.key} className="tracker-row">
-                <div className="tracker-cat">
-                  <span className="tracker-dot" style={{ backgroundColor: row.color }} />
-                  <span className="tracker-cat-name">{row.label}</span>
-                  {row.budgeted !== null && (
-                    <span className="tracker-budgeted">
-                      {t.trackerBudgeted}: {formatRand(row.budgeted)}
-                    </span>
-                  )}
-                </div>
-                <div className="tracker-input-wrap">
-                  <input
-                    className="afford-input"
-                    type="number"
-                    min="0"
-                    placeholder={t.trackerPlaceholder}
-                    value={spent[row.key] ?? ""}
-                    onChange={(e) =>
-                      setSpent((prev) => ({ ...prev, [row.key]: e.target.value }))
-                    }
-                  />
-                </div>
-                {row.diff !== null && (
-                  <div
-                    className={`tracker-badge ${
-                      row.diff > 0
-                        ? "tracker-badge--over"
-                        : row.diff < 0
-                        ? "tracker-badge--under"
-                        : "tracker-badge--even"
-                    }`}
-                  >
-                    {row.diff > 0
-                      ? `▲ ${formatRand(row.diff)}`
-                      : row.diff < 0
-                      ? `▼ ${formatRand(Math.abs(row.diff))}`
-                      : "✓"}
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-
-          {totalDiff !== null && (
-            <div
-              className={`afford-result ${
-                totalDiff > 0
-                  ? "afford-result--no"
-                  : totalDiff < 0
-                  ? "afford-result--yes"
-                  : "tracker-summary--exact"
-              }`}
-            >
-              <strong>
-                {totalDiff === 0
-                  ? t.trackerSummaryExact
-                  : totalDiff > 0
-                  ? `${t.trackerSummaryOver} ${formatRand(totalDiff)} this month.`
-                  : `${t.trackerSummaryUnder} ${formatRand(Math.abs(totalDiff))} this month.`}
-              </strong>
-            </div>
-          )}
-        </>
-      )}
     </section>
   );
 }
